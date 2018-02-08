@@ -2,6 +2,8 @@ import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 
+class Thermal_fuzzy_motor :
+
 # New Antecedent/Consequent objects hold universe variables and membership
 # functions
 delta_T = ctrl.Antecedent(np.arange(0, 45, 1), 'delta_T')
@@ -30,20 +32,10 @@ motor_ctrl = ctrl.ControlSystem([rule1, rule2, rule3,rule4, rule5])
 #simulation for the motor condition
 motor = ctrl.ControlSystemSimulation(motor_ctrl)
 
-#interactive (manual) testing ask for ambient and motor temperatures
-#computes delta, and gives motor condition
-ambient_T=input("enter ambient temperature")
-motor_T=input("enter motor temperature")
-raw_delta=float(motor_T)-float(ambient_T)
-processed_delta=np.clip(raw_delta,0,45)
+def compute_status(motor_T,ambient_T):
+    raw_delta=float(motor_T)-float(ambient_T)
+    processed_delta=np.clip(raw_delta,0,45)
+    motor.input['delta_T'] = processed_delta
+    motor.compute()
+    return (motor.output['condition'])
 
-motor.input['delta_T'] = processed_delta
-
-
-
-motor.compute()
-
-print (motor.output['condition'])
-condition.view(sim=motor)
-
-a=input("press something to continue...")
